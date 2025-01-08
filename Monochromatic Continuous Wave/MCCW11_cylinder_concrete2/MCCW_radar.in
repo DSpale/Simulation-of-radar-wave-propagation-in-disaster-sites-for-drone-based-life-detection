@@ -1,0 +1,70 @@
+#python:
+class box_object:
+  def __init__(self, A, B, C, D, material):
+    self.A = np.array(A)
+    self.B = np.array(B)
+    self.C = np.array(C)
+    self.D = np.array(D)
+    self.center = self.A+(self.C-self.A)/2
+    self.material = material
+
+  def rotate(self, degrees):
+    rot = np.array([[np.cos(degrees), -np.sin(degrees)], [np.sin(degrees), np.cos(degrees)]])
+    self.A = rot@(self.A-self.center)+self.center
+    self.B = rot@(self.B-self.center)+self.center
+    self.C = rot@(self.C-self.center)+self.center
+    self.D = rot@(self.D-self.center)+self.center
+
+  def place(self):
+     triangle(self.A[0], self.A[1], 0, self.B[0], self.B[1], 0, self.C[0], self.C[1], 0, 5e-4, self.material)
+     triangle(self.B[0], self.B[1], 0, self.C[0], self.C[1], 0, self.D[0], self.D[1], 0, 5e-4, self.material)
+
+from gprMax.input_cmd_funcs import *
+import numpy as np
+command('title', 'Monochromatic Wave Simulation: Plate/No obstructions''')
+
+tsim = 20e-9 # Time window for the simulation
+
+space_res = 5e-4 # Space discretization
+
+# Domain size
+x_domain_dim = 0.300
+y_domain_dim = 1.100
+z_domain_dim = space_res # Only 2D scan
+
+domain = domain(x_domain_dim, y_domain_dim, z_domain_dim)
+dx_dy_dz(space_res, space_res, space_res)
+time_window(tsim)
+
+# Assume "body fluid" as material for demonstrational purposes, ID = 48
+# See https://web.corral.tacc.utexas.edu/AustinManEMVoxels/AustinMan/assumptions/Material_IDs_Properties.txt
+# Material command:
+#   Rel. Permittivity
+#   Conductivity
+#   Relative permeability (1 for non-magnetic materials)
+#   Magnetic loss (0 for non-magnetic materials)
+#   Identifier
+material(permittivity=68.9, conductivity=1.636, permeability=1, magconductivity=0, name='BodyFluid')
+material(permittivity=5.424, conductivity=0.04896, permeability=1, magconductivity=0, name='BreastFat')
+
+# Use Hertzian dipole with ramped sine excitation
+excitation = waveform('contsine', amplitude=1, frequency=1e9, identifier='excitation')
+tx = hertzian_dipole('z', 0.150, 1.000, 0, excitation)
+rx(0.050, 1.000, 0)
+
+# Change position of box to simulate breathing
+displacement = (current_model_run - 1) * space_res
+box(0, 0, 0, x_domain_dim, y_domain_dim, z_domain_dim, 'free_space')
+b1 = box_object([0.020, 0.050+displacement], [0.280, 0.050+displacement], [0.020, 0.070+displacement], [0.280, 0.070 + displacement], 'BodyFluid')
+b1.place()
+
+# Geometry view, normal mode (n)
+geometry_view(0, 0, 0, x_domain_dim, y_domain_dim, z_domain_dim, space_res, space_res, space_res, 'geomV', 'n')
+
+# Generate snapshots of model run
+if current_model_run == 10:
+    N = 100
+    for i in range(1, N+1):
+        snapshot(0, 0, 0, domain.x, domain.y, domain.z, space_res, space_res, space_res, i*(0.6*tsim/N), 'snapshot' + str(i))
+
+#end_python:

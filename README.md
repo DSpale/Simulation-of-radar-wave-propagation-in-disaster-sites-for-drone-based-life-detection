@@ -19,7 +19,7 @@ Note that multiple related simulations need to be performed via the `-n SIMULATI
 
 If the simulation is run in a HPC environment (as recommended), examples for shell scripts for the bwHPC cluster are given in [Shell scripts](<./Shell scripts>). Adjust the respective parameters according to your folder structure.
 
-The MATLAB processing files are given in [MATLAB scripts](<./MATLAB scripts>). Additionally, a MATLAB function for Levenberg-Marquardt optimization for circle fitting is included. To perform FCCW simulations with the single excitation approach, the excitation signal needs to generated in a .txt-file first via [FCCW_generation.m](<./MATLAB scripts/FCCW_generation.m>).
+The MATLAB processing files are given in [MATLAB scripts](<./MATLAB scripts>). Additionally, a MATLAB function for Levenberg-Marquardt optimization for circle fitting is included. To perform FCCW simulations with the single excitation approach, the excitation signal needs to be generated in a .txt-file first via [FCCW_generation.m](<./MATLAB scripts/FCCW_generation.m>).
 
 To process data, place the respective evaluation script into the same folder as the output files of the gprMax simulations. Adjust image_path (where images are stored) and plotting parameters according to your needs.
 

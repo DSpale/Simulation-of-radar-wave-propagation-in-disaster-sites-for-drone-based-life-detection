@@ -13,6 +13,8 @@
 # #SBATCH --mail-type=all
 # #SBATCH --mail-user=your@email-adress
 
+# Specify --output and --error according to preferred naming conventions (here: Progress of bwHPC simulation/messages are saved in directory sim_results)
+
 # Directory of gprMax, adjust according to your folder structure
 cd ..
 cd ..

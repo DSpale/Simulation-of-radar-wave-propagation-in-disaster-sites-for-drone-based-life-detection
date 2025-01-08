@@ -21,17 +21,17 @@ class box_object:
 
 from gprMax.input_cmd_funcs import *
 import numpy as np
-command('title', 'FCCW bioradar simulation with various debris (with concrete), 0.4 m distance, superposition approach')
+command('title', 'FCCW single excitation simulation with varying radar distances (1-10m)')
 
-tsim = 15e-9 # Time window for the simulation
+tsim = 700e-9 # Time window for the simulation
 
 space_res_x = 5e-4 # Space discretization
-space_res_y = 5e-4 # Space discretization
+space_res_y = 2.5e-3 # Space discretization
 space_res_z = min(space_res_x, space_res_y) # Space discretization
 
 # Domain size
 x_domain_dim = 0.200
-y_domain_dim = 0.600
+y_domain_dim = 11.100
 z_domain_dim = space_res_z # Only 2D scan
 
 domain = domain(x_domain_dim, y_domain_dim, z_domain_dim)
@@ -47,7 +47,6 @@ time_window(tsim)
 #   Magnetic loss (0 for non-magnetic materials)
 #   Identifier
 material(permittivity=68.9, conductivity=1.636, permeability=1, magconductivity=0, name='BodyFluid')
-material(permittivity=7, conductivity=9.76e-8, permeability=1, magconductivity=0, name='MR_plywood')
 
 # Debris materials, sources see Zhekov - Dielectric Properties of Common Building Materials for Ultrawideband Propagation Studies
 # Some poles were not set, as their asociated relaxation times are smaller than the time step in the simulation
@@ -56,8 +55,6 @@ material(permittivity=2.004, conductivity=1.993e-3, permeability=1, magconductiv
 material(permittivity=1, conductivity=1e-3, permeability=1, magconductivity=0, name='glass')
 material(permittivity=2.525, conductivity=2.27e-3, permeability=1, magconductivity=0, name='wood_cement_board')
 material(permittivity=2.674, conductivity=2.65e-5, permeability=1, magconductivity=0, name='gypsum_plaster')
-material(permittivity=10, conductivity=10, permeability=1, magconductivity=0, name='concrete')
-material(permittivity=4, conductivity=1, permeability=1, magconductivity=0, name='concrete_dry')
 
 #end_python:
 add_dispersion_debye(4 0.061 4.636e-12 0.117 1.281e-11 0.262 4.424e-11 0.436 2.396e-10 '5_ply_plywood')
@@ -66,38 +63,33 @@ add_dispersion_debye(5 0.230 2.607e-12 0.230 6.178e-12 0.288 1.582e-11 0.424 5.4
 add_dispersion_debye(5 0.005 3.267e-12 0.008 7.306e-12 0.016 1.700e-11 0.019 4.559e-11 0.012 1.934e-10  'gypsum_plaster')
 #python:
 
-# Simulate per displacement the 32 frequency components, then repeat for the next displacement
-frequency_step = 59.52e6 / 31 # BW / (M-1)
-excitation_frequency = 1.3e9 - 29.28e6 + frequency_step*((current_model_run-1) % 32)
+# Use pregenerated FCCW excitation signal
+excitation_file('excitations_FCCW_IQ_ramp.txt')
+tx = hertzian_dipole('z', 0.150, 10.120, 0, 'FCCW_IQ_excitation')
+rx(0.050, 10.120, 0)
 
-# Use sinewave with respective frequency component as excitation
-excitation = waveform('contsine', amplitude=1, frequency=excitation_frequency, identifier='excitation')
-tx = hertzian_dipole('z', 0.150, 0.500, 0, 'excitation')
-rx(0.050, 0.500, 0)
-
-displacement = ((current_model_run-1) // 32)*10*space_res_y
+displacement = (current_model_run-1)*space_res_y*2
 
 box(0, 0, 0, x_domain_dim, y_domain_dim, z_domain_dim, 'free_space')
 
 cylinder(0.100, 0.110, 0, 0.100, 0.110, z_domain_dim, 0.010 + displacement, 'BodyFluid', 'y')
 
-box(0, 0, 0, x_domain_dim, 0.100, z_domain_dim, '5_ply_plywood') # To ensure Body-cylinder does not overlay Plywood ground
+box(0, 0, 0, x_domain_dim, 0.100, z_domain_dim, '5_ply_plywood') # To ensure Body-cylinder does not invade Plywood ground
 
-# Place various debris objects
+# Place debris objects
 b2 = box_object([0.010, 0.100], [0.090, 0.270], [0.010, 0.130], [0.090, 0.290], 'glass')
 b2.place()
 
 b3 = box_object([0.180, 0.090], [0.190, 0.100], [0.140, 0.200], [0.150, 0.210], 'wood_cement_board')
 b3.place()
 
-b4 = box_object([0.050, 0.180], [0.150, 0.180], [0.050, 0.200], [0.150, 0.200], 'concrete_dry')
+b4 = box_object([0.050, 0.180], [0.150, 0.180], [0.050, 0.200], [0.150, 0.200], 'polystyrene')
 b4.place()
 
-b5 = box_object([0.100, 0.200], [0.120, 0.200], [0.100, 0.250], [0.120, 0.250], 'concrete')
+b5 = box_object([0.100, 0.200], [0.120, 0.200], [0.100, 0.250], [0.120, 0.250], 'gypsum_plaster')
 b5.place()
 
 # Geometry view, normal mode (n)
-if ((current_model_run - 1) % 32) == 0:
-  geometry_view(0, 0, 0, x_domain_dim, y_domain_dim, z_domain_dim, space_res_x, space_res_y, space_res_z, 'geomV', 'n')
+geometry_view(0, 0, 0, x_domain_dim, y_domain_dim, z_domain_dim, space_res_x, space_res_y, space_res_z, 'geomV', 'n')
 
 #end_python:

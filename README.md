@@ -17,11 +17,13 @@ Note that multiple related simulations need to be performed via the `-n SIMULATI
 - FCCW - Superposition excitation: 320 simulations (10 displacements * 32 frequency components)
 - FCCW - Single excitation approach: 10 simulations
 
-If the simulation is run in a HPC environment (as recommended), examples for shell scripts for the bwHPC cluster are given in [Shell scripts](<./Shell scripts>). Adjust the respective parameters according to your folder structure.
+If the simulation is run in a HPC environment (as recommended), an example for a shell script is given by [the exemplary shell script](example_shell_script.sh). Adjust the respective parameters according to your folder structure and performed simulation.
 
 The MATLAB processing files are given in [MATLAB scripts](<./MATLAB scripts>). Additionally, a MATLAB function for Levenberg-Marquardt optimization for circle fitting is included. To perform FCCW simulations with the single excitation approach, the excitation signal needs to be generated in a .txt-file first via [FCCW_generation.m](<./MATLAB scripts/FCCW_generation.m>).
 
 To process data, place the respective evaluation script into the same folder as the output files of the gprMax simulations. Adjust image_path (where images are stored) and plotting parameters according to your needs.
+
+NOTE: For the FCCW single excitation simulations with varying radar distances (1-10m), the MATLAB processing files need to be adjusted to fit the naming convention of the gprMax scripts.
 
 ## Feedback
 

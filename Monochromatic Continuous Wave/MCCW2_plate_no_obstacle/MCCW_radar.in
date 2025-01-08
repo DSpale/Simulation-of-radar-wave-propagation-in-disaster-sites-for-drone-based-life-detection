@@ -52,7 +52,7 @@ excitation = waveform('contsine', amplitude=1, frequency=1e9, identifier='excita
 tx = hertzian_dipole('z', 0.150, 1.000, 0, excitation)
 rx(0.050, 1.000, 0)
 
-# Change position of box to simulate breathing
+# Change position of BodyFluid box in y-direction to simulate breathing
 displacement = (current_model_run - 1) * space_res
 box(0, 0, 0, x_domain_dim, y_domain_dim, z_domain_dim, 'free_space')
 b1 = box_object([0.020, 0.050+displacement], [0.280, 0.050+displacement], [0.020, 0.070+displacement], [0.280, 0.070 + displacement], 'BodyFluid')

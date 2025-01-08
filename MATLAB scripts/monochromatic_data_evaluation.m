@@ -3,6 +3,9 @@ close all
 
 % Adjust image path
 image_path = 'D:\Uni\10. Semester\Masterarbeit\images\MCCW\';
+if ~exist(image_path, 'dir')
+    mkdir(image_path)
+end
 [~, simulation_directory, ~] = fileparts(pwd);
 
 set(0, 'DefaultAxesFontName', 'Times New Roman');
@@ -18,6 +21,7 @@ Ez = 4;
 Hx = 5;
 Hy = 6;
 Hz = 7;
+
 % Read the simulation data filenames
 simulation_files = dir(fullfile(pwd, '*.out'));
 

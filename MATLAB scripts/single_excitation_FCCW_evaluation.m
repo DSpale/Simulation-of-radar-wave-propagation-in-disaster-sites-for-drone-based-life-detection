@@ -32,7 +32,9 @@ FCCW.period_length = 1/FCCW.frequency_step;
 FCCW.carrier_frequency = 1.3e9;
 
 FCCW.starting_frequency = -29.28e6; % in the baseband!
-FCCW.frequencies = linspace(FCCW.starting_frequency, FCCW.starting_frequency + FCCW.BW, FCCW.frequencies_amount) + FCCW.carrier_frequency;
+FCCW.frequencies = linspace(FCCW.starting_frequency, ...
+    FCCW.starting_frequency + FCCW.BW, ...
+    FCCW.frequencies_amount) + FCCW.carrier_frequency;
 
 % Range resolution
 delta_R = c/(2*FCCW.BW);
@@ -102,22 +104,34 @@ for i_sim = 1:simulations
 
         % Construct 4096 samples for the signal processing algorithm with
         % phase shift correction for beat period
-        summed_Ex(i_sample) = (weight_sample_a * Ex(sample_a) + weight_sample_b * Ex(sample_b))*exp(-1j*pi/3*curr_iteration);
-        summed_Ey(i_sample) = (weight_sample_a * Ey(sample_a) + weight_sample_b * Ey(sample_b))*exp(-1j*pi/3*curr_iteration);
-        summed_Ez(i_sample) = (weight_sample_a * Ez(sample_a) + weight_sample_b * Ez(sample_b))*exp(-1j*pi/3*curr_iteration);
-        summed_Hx(i_sample) = (weight_sample_a * Hx(sample_a) + weight_sample_b * Hx(sample_b))*exp(-1j*pi/3*curr_iteration);
-        summed_Hy(i_sample) = (weight_sample_a * Hy(sample_a) + weight_sample_b * Hy(sample_b))*exp(-1j*pi/3*curr_iteration);
-        summed_Hz(i_sample) = (weight_sample_a * Hz(sample_a) + weight_sample_b * Hz(sample_b))*exp(-1j*pi/3*curr_iteration);
+        summed_Ex(i_sample) = (weight_sample_a * Ex(sample_a) + ...
+            weight_sample_b * Ex(sample_b))*exp(-1j*pi/3*curr_iteration);
+        summed_Ey(i_sample) = (weight_sample_a * Ey(sample_a) + ...
+            weight_sample_b * Ey(sample_b))*exp(-1j*pi/3*curr_iteration);
+        summed_Ez(i_sample) = (weight_sample_a * Ez(sample_a) + ...
+            weight_sample_b * Ez(sample_b))*exp(-1j*pi/3*curr_iteration);
+        summed_Hx(i_sample) = (weight_sample_a * Hx(sample_a) + ...
+            weight_sample_b * Hx(sample_b))*exp(-1j*pi/3*curr_iteration);
+        summed_Hy(i_sample) = (weight_sample_a * Hy(sample_a) + ...
+            weight_sample_b * Hy(sample_b))*exp(-1j*pi/3*curr_iteration);
+        summed_Hz(i_sample) = (weight_sample_a * Hz(sample_a) + ...
+            weight_sample_b * Hz(sample_b))*exp(-1j*pi/3*curr_iteration);
 
     end
     % Correction of factor 2 & application of frequency shift property
     % (shifting to baseband)
-    summed_Ex = summed_Ex / 2 .* exp(-2j*pi*FCCW.carrier_frequency*sample_times);
-    summed_Ey = summed_Ey / 2 .* exp(-2j*pi*FCCW.carrier_frequency*sample_times);
-    summed_Ez = summed_Ez / 2 .* exp(-2j*pi*FCCW.carrier_frequency*sample_times);
-    summed_Hx = summed_Hx / 2 .* exp(-2j*pi*FCCW.carrier_frequency*sample_times);
-    summed_Hy = summed_Hy / 2 .* exp(-2j*pi*FCCW.carrier_frequency*sample_times);
-    summed_Hz = summed_Hz / 2 .* exp(-2j*pi*FCCW.carrier_frequency*sample_times);
+    summed_Ex = summed_Ex / 2 .* ...
+        exp(-2j*pi*FCCW.carrier_frequency*sample_times);
+    summed_Ey = summed_Ey / 2 .* ...
+        exp(-2j*pi*FCCW.carrier_frequency*sample_times);
+    summed_Ez = summed_Ez / 2 .* ...
+        exp(-2j*pi*FCCW.carrier_frequency*sample_times);
+    summed_Hx = summed_Hx / 2 .* ...
+        exp(-2j*pi*FCCW.carrier_frequency*sample_times);
+    summed_Hy = summed_Hy / 2 .* ...
+        exp(-2j*pi*FCCW.carrier_frequency*sample_times);
+    summed_Hz = summed_Hz / 2 .* ...
+        exp(-2j*pi*FCCW.carrier_frequency*sample_times);
 
     % Save intermediate results
     save_data = [summed_Ex, summed_Ey, summed_Ez, summed_Hx, summed_Hy, summed_Hz];
@@ -145,7 +159,8 @@ for i_sim = 1:simulations
         % of 97
         frequency_component = data{i_sim, 2}(97+(i_frequency_component-1)*128);
         data{i_sim, 3}(i_frequency_component) = frequency_component;
-        data{i_sim, 4} = data{i_sim, 4} + abs(frequency_component)*exp(1j*2*pi/32*(i_frequency_component-1).*(0:31)');
+        data{i_sim, 4} = data{i_sim, 4} + abs(frequency_component)*...
+            exp(1j*2*pi/32*(i_frequency_component-1).*(0:31)');
     end
 end
 
@@ -167,7 +182,8 @@ save(strcat(pwd, '\', save_path, '\frames_data', '.mat'), 'frames_data');
 
 %% DATA PLOTTING OF THE INDIVIDUAL SIGNAL PROCESSING STEPS
 close all
-f_fft = f_s_frame/datapoints_per_frame*(-datapoints_per_frame/2:datapoints_per_frame/2-1);
+f_fft = f_s_frame/datapoints_per_frame*...
+    (-datapoints_per_frame/2:datapoints_per_frame/2-1);
 figure()
 hold on
 grid on
@@ -179,7 +195,8 @@ axis padded; xlim('tight')
 xlabel('Time in µs')
 ylabel('$E_\mathrm{z}$ in kV/m', 'interpreter', 'latex')
 set(gca, 'FontSize', 16)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_time_domain.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_time_domain.pdf'), 'ContentType','vector')
 
 % Frequency domain data
 figure()
@@ -192,7 +209,8 @@ axis padded; xlim('tight')
 xlabel('Frequency in MHz', 'interpreter', 'latex')
 ylabel('$E_\mathrm{z}$ in V/m', 'interpreter', 'latex')
 set(gca, 'FontSize', 16)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_frequency_domain1.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_frequency_domain1.pdf'), 'ContentType','vector')
 
 % To only show the 32 relevant components
 figure()
@@ -210,7 +228,8 @@ clear y_lim
 xlabel('Frequency in MHz', 'interpreter', 'latex')
 ylabel('$E_\mathrm{z}$ in V/m', 'interpreter', 'latex')
 set(gca, 'FontSize', 16)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_frequency_domain2.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_frequency_domain2.pdf'), 'ContentType','vector')
 
 % Spatial domain
 figure()
@@ -218,13 +237,15 @@ hold on
 grid on
 plot((1:31)*delta_R, real(data{1, 4}(2:end)), '-x')
 plot((1:31)*delta_R, imag(data{1, 4}(2:end)), '-x')
-xline(16*delta_R,'-',{'Axis of','symmetry'}, 'LabelHorizontalAlignment', 'left', 'FontSize', 16, 'FontName', 'CMU Serif');
+xline(16*delta_R,'-',{'Axis of','symmetry'}, 'LabelHorizontalAlignment', 'left', ...
+    'FontSize', 16, 'FontName', 'CMU Serif');
 legend('Real part', 'Imaginary part')
 axis padded
 xlabel('Range in m', 'interpreter', 'latex')
 ylabel('IFFT of radar frequency domain', 'interpreter', 'latex')
 set(gca, 'FontSize', 16)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_spatial_domain.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_spatial_domain.pdf'), 'ContentType','vector')
 
 % Range bin plots. Adjust range bins (here: i = 5:7) according to range
 % bins (i = 1 - "range bin 0" is not used in the processing algorithm)
@@ -241,7 +262,8 @@ for i = 5:7
     set(gca, 'FontSize', 16)
 end
 xlabel('Frame number', 'interpreter', 'latex')
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_range_frames.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_range_frames.pdf'), 'ContentType','vector')
 
 % Obtain peak-to-peak breathing activities
 range_activity = zeros(16, 1);
@@ -256,7 +278,8 @@ xlabel("Range in m", 'interpreter', 'latex')
 ylabel("Peak-to-peak breathing activity", 'interpreter', 'latex')
 axis padded
 set(gca, 'FontSize', 16)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_range_estimate.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_range_estimate.pdf'), 'ContentType','vector')
 
 % Calculate prominence ratio PR and save it to .txt-file
 PR_squared = range_activity.^2;

@@ -88,7 +88,8 @@ for i_sim = 1:num_of_simulations
             % Get real data by interpolating linearly between two nearest
             % samples a and b
             curr_sample_time.r = sample_times(i_sample);
-            curr_sample.r = mod(curr_sample_time.r, frequencies{i_frequency_component, 2}) / dt;
+            curr_sample.r = mod(curr_sample_time.r, ...
+                frequencies{i_frequency_component, 2}) / dt;
 
             sample_a.r = floor(curr_sample.r)+1;
             sample_b.r = sample_a.r + 1;
@@ -96,8 +97,10 @@ for i_sim = 1:num_of_simulations
             weight_sample_a.r = 1 - weight_sample_b.r;
 
             % Perform same operations for imaginary data
-            curr_sample_time.im = sample_times(i_sample) + frequencies{i_frequency_component, 3};
-            curr_sample.im = mod(curr_sample_time.im, frequencies{i_frequency_component, 2}) / dt;
+            curr_sample_time.im = sample_times(i_sample) + ...
+                frequencies{i_frequency_component, 3};
+            curr_sample.im = mod(curr_sample_time.im, ...
+                frequencies{i_frequency_component, 2}) / dt;
 
             sample_a.im = floor(curr_sample.im)+1;
             sample_b.im = sample_a.im + 1;
@@ -163,7 +166,8 @@ for i_sim = 1:num_of_simulations
     for i_frequency_component = 1:32 % samples where the different frequencies are located
         frequency_component = data{i_sim, 2}(97+(i_frequency_component-1)*128);
         data{i_sim, 3}(i_frequency_component) = frequency_component;
-        data{i_sim, 4} = data{i_sim, 4} + abs(frequency_component)*exp(1j*2*pi/32*(i_frequency_component-1).*(0:31)');
+        data{i_sim, 4} = data{i_sim, 4} + abs(frequency_component) * ...
+            exp(1j*2*pi/32*(i_frequency_component-1).*(0:31)');
     end
 end
 
@@ -198,7 +202,8 @@ axis padded; xlim('tight')
 xlabel('Time in µs')
 ylabel('$E_\mathrm{z}$ in kV/m', 'interpreter', 'latex')
 set(gca, 'FontSize', 16)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_time_domain.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_time_domain.pdf'), 'ContentType','vector')
 
 figure()
 hold on
@@ -210,7 +215,8 @@ axis padded; xlim('tight')
 xlabel('Frequency in MHz', 'interpreter', 'latex')
 ylabel('$E_\mathrm{z}$ in V/m', 'interpreter', 'latex')
 set(gca, 'FontSize', 16)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_frequency_domain1.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_frequency_domain1.pdf'), 'ContentType','vector')
 
 % To only show the 32 relevant components
 figure()
@@ -228,7 +234,8 @@ clear y_lim
 xlabel('Frequency in MHz', 'interpreter', 'latex')
 ylabel('$E_\mathrm{z}$ in V/m', 'interpreter', 'latex')
 set(gca, 'FontSize', 16)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_frequency_domain2.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_frequency_domain2.pdf'), 'ContentType','vector')
 
 % Spatial domain
 figure()
@@ -236,13 +243,15 @@ hold on
 grid on
 plot((1:31)*delta_R, real(data{1, 4}(2:end)), '-x')
 plot((1:31)*delta_R, imag(data{1, 4}(2:end)), '-x')
-xline(16*delta_R,'-',{'Axis of','symmetry'}, 'LabelHorizontalAlignment', 'left', 'FontSize', 16, 'FontName', 'CMU Serif');
+xline(16*delta_R,'-',{'Axis of','symmetry'}, ...
+    'LabelHorizontalAlignment', 'left', 'FontSize', 16, 'FontName', 'CMU Serif');
 legend('Real part', 'Imaginary part', 'FontName', 'CMU Serif')
 axis padded
 xlabel('Range in m', 'interpreter', 'latex')
 ylabel('IFFT of radar frequency domain', 'interpreter', 'latex')
 set(gca, 'FontSize', 16)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_spatial_domain.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_spatial_domain.pdf'), 'ContentType','vector')
 
 % Range bin plots
 figure()
@@ -258,7 +267,8 @@ for i = 2:4
     set(gca, 'FontSize', 16)
 end
 xlabel('Frame number', 'interpreter', 'latex')
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_range_frames.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_range_frames.pdf'), 'ContentType','vector')
 
 
 % Obtain peak-to-peak breathing activities
@@ -274,7 +284,8 @@ xlabel("Range in m", 'interpreter', 'latex')
 ylabel("Peak-to-peak breathing activity", 'interpreter', 'latex')
 axis padded
 set(gca, 'FontSize', 16)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_range_estimate.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_range_estimate.pdf'), 'ContentType','vector')
 
 % Calculate prominence ratio PR and save it to .txt-file
 PR_squared = range_activity.^2;

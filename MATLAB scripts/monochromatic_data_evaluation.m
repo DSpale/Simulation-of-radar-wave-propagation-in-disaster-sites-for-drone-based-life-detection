@@ -144,7 +144,8 @@ end
 radii_label = strcat(string(displacements(2,:)), ' mm');
 lg = legend(radii_label, 'Orientation', 'horizontal', 'NumColumns', 2);
 lg.Layout.Tile = 'south';
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_field_quantities.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_field_quantities.pdf'), 'ContentType','vector')
 
 
 %% Generate figure depicting phase change due to breathing
@@ -171,7 +172,8 @@ for i = 1:num_of_simulations
     data_trunc_corr{i, 2} = c;
     [~, I_prox] = max(c);
     lags_max = lags(I_prox);
-    data_trunc_corr{i, 3} = mod(lags_max, length(t_corr))/length(t_corr)*360;
+    data_trunc_corr{i, 3} = mod(lags_max, ...
+        length(t_corr))/length(t_corr)*360;
 end
 clear c I_prox lags_max
 
@@ -188,7 +190,8 @@ xlabel('Displacement in cm', 'interpreter', 'latex')
 ylabel('Phase in Degrees', 'interpreter', 'latex')
 axis padded
 set(gca, 'FontSize', 26)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_phases.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_phases.pdf'), 'ContentType','vector')
 
 figure
 hold on
@@ -199,7 +202,8 @@ xlabel('Displacement in cm', 'interpreter', 'latex')
 ylabel('Amplitude in kV/m', 'interpreter', 'latex')
 axis padded
 set(gca, 'FontSize', 26)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_amplitudes.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_amplitudes.pdf'), 'ContentType','vector')
 
 x_comps = zeros(1, num_of_simulations);
 y_comps = zeros(1, num_of_simulations);
@@ -215,13 +219,15 @@ end
 center_magnitude = sqrt(fitted_center(1)^2+fitted_center(2)^2);
 phase1 = atan2(y_comps(end)-fitted_center(2), x_comps(end)-fitted_center(1));
 phase2 = atan2(y_comps(1)-fitted_center(2), x_comps(1)-fitted_center(1));
-fprintf('Fitted center: (%.4f, %.4f), Magnitude: %.4f\n', fitted_center(1), fitted_center(2), center_magnitude);
+fprintf('Fitted center: (%.4f, %.4f), Magnitude: %.4f\n', ...
+    fitted_center(1), fitted_center(2), center_magnitude);
 fprintf('Fitted radius: %.4f\n', fitted_radius);
 fprintf('Phase difference: %.4f°\n', abs(phase1-phase2)/(2*pi)*360);
 
 % Write results to text file
 txt_file = fopen('circle_results.txt', 'wt');
-fprintf(txt_file, 'Fitted center: (%.4f, %.4f), Magnitude: %.4f\n', fitted_center(1), fitted_center(2), center_magnitude);
+fprintf(txt_file, 'Fitted center: (%.4f, %.4f), Magnitude: %.4f\n', ...
+    fitted_center(1), fitted_center(2), center_magnitude);
 fprintf(txt_file, 'Fitted radius: %.4f\n', fitted_radius);
 fprintf(txt_file, 'Phase difference: %.4f°\n', abs(phase1-phase2)/(2*pi)*360);
 fclose(txt_file);
@@ -230,7 +236,8 @@ fclose(txt_file);
 figure
 scatter(x_comps, y_comps, 'DisplayName', 'Data Points');
 hold on;
-scatter(fitted_center(1), fitted_center(2), 'r', 'filled', 'DisplayName', 'Static center')
+scatter(fitted_center(1), fitted_center(2), 'r', 'filled', ...
+    'DisplayName', 'Static center')
 theta_circle = linspace(0, 2*pi, 100);
 circle_x = fitted_center(1) + fitted_radius * cos(theta_circle);
 circle_y = fitted_center(2) + fitted_radius * sin(theta_circle);
@@ -242,7 +249,8 @@ axis equal
 grid on
 box on
 set(gca, 'FontSize', 14)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_circle.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_circle.pdf'), 'ContentType','vector')
 
 %% COSINE FITTING
 t = ((0:(length(cell2mat(data_trunc_corr(1,1)))-1))*dt)';
@@ -273,7 +281,8 @@ xlabel('Displacement in cm', 'interpreter', 'latex')
 ylabel('Phase in Degrees', 'interpreter', 'latex')
 axis padded
 set(gca, 'FontSize', 26)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_phases_LinReg.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_phases_LinReg.pdf'), 'ContentType','vector')
 
 figure
 hold on
@@ -284,7 +293,8 @@ xlabel('Displacement in cm', 'interpreter', 'latex')
 ylabel('Amplitude in kV/m', 'interpreter', 'latex')
 axis padded
 set(gca, 'FontSize', 26)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_amplitudes_LinReg.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_amplitudes_LinReg.pdf'), 'ContentType','vector')
 
 x_comps = zeros(1, num_of_simulations);
 y_comps = zeros(1, num_of_simulations);
@@ -300,13 +310,15 @@ end
 center_magnitude = sqrt(fitted_center(1)^2+fitted_center(2)^2);
 phase1 = atan2(y_comps(end)-fitted_center(2), x_comps(end)-fitted_center(1));
 phase2 = atan2(y_comps(1)-fitted_center(2), x_comps(1)-fitted_center(1));
-fprintf('Fitted center: (%.4f, %.4f), Magnitude: %.4f\n', fitted_center(1), fitted_center(2), center_magnitude);
+fprintf('Fitted center: (%.4f, %.4f), Magnitude: %.4f\n', ...
+    fitted_center(1), fitted_center(2), center_magnitude);
 fprintf('Fitted radius: %.4f\n', fitted_radius);
 fprintf('Phase difference: %.4f°\n', abs(phase1-phase2)/(2*pi)*360);
 
 % Write once again to text file
 txt_file = fopen('circle_results_LinReg.txt', 'wt');
-fprintf(txt_file, 'Fitted center: (%.4f, %.4f), Magnitude: %.4f\n', fitted_center(1), fitted_center(2), center_magnitude);
+fprintf(txt_file, 'Fitted center: (%.4f, %.4f), Magnitude: %.4f\n', ...
+    fitted_center(1), fitted_center(2), center_magnitude);
 fprintf(txt_file, 'Fitted radius: %.4f\n', fitted_radius);
 fprintf(txt_file, 'Phase difference: %.4f°\n', abs(phase1-phase2)/(2*pi)*360);
 fclose(txt_file);
@@ -315,7 +327,8 @@ fclose(txt_file);
 figure
 scatter(x_comps, y_comps, 'DisplayName', 'Data Points');
 hold on;
-scatter(fitted_center(1), fitted_center(2), 'r', 'filled', 'DisplayName', 'Static center')
+scatter(fitted_center(1), fitted_center(2), 'r', 'filled', ...
+    'DisplayName', 'Static center')
 theta_circle = linspace(0, 2*pi, 100);
 circle_x = fitted_center(1) + fitted_radius * cos(theta_circle);
 circle_y = fitted_center(2) + fitted_radius * sin(theta_circle);
@@ -327,4 +340,5 @@ axis equal
 grid on
 box on
 set(gca, 'FontSize', 14)
-exportgraphics(gcf,strcat(image_path, simulation_directory, '_circle_LinReg.pdf'), 'ContentType','vector')
+exportgraphics(gcf,strcat(image_path, simulation_directory, ...
+    '_circle_LinReg.pdf'), 'ContentType','vector')
